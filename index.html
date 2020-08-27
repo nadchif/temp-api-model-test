@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road Classification Model Tester</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #previewImg {
+            height: 160px;
+        }
+
+        #apiEndpoint {
+            width: 60%
+        }
+
+        pre {
+            padding: 1em;
+            background: #222;
+            color: #fff;
+
+        }
+        .content {
+            display: flex;
+        }
+        .content > div {
+            flex: 1;
+            padding: 1em;
+        }
+        .content > div:last-child{
+            background-color: #eee;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div>
+            <p>
+                <label for="apiEndpoint">API Endpoint</label>
+                <input id="apiEndpoint" placeholder="API Endpoint"
+                    value="https://team-163-ai.herokuapp.com/api/v1/read">
+            </p>
+            <p>
+                <b>Select an image file and click upload</b>
+            </p>
+            <p>
+                <img id="previewImg" alt="Preview Image" src="https://place-hold.it/200x160&text=Image%20Preview">
+            </p>
+            <p>
+                <input type="file" id="userFileInput" title="Input file">
+                <button type="button" id="uploadBtn">Upload</button>
+            </p>
+            <hr />
+        </div>
+        <div>
+            <h2>Results:</h2>
+            <p>
+                Status Code
+            <pre id="statusCode"></pre>
+            </p>
+            <p>
+                Body
+            <pre id="previewBody">
+
+        </pre>
+            </p>
+        </div>
+
+    </div>
+    <script>
+        const statusView = document.getElementById("statusCode");
+        const bodyView = document.getElementById("previewBody");
+        const imageView = document.getElementById("previewImg");
+        const uploadImg = () => {
+            const endpointUrl = document.getElementById("apiEndpoint").value || "http://127.0.0.1:5000";
+            const formData = new FormData();
+            const fileField = document.getElementById("userFileInput");
+            if (!fileField.files[0]) {
+                return alert("Select an image!");
+            }
+            formData.append('file', fileField.files[0]);
+            bodyView.textContent = '';
+            statusView.textContent = '...';
+            fetch(endpointUrl, {
+                method: 'POST',
+                body: formData
+            }).then(response => {
+                statusView.textContent = response.status;
+                return response.text();
+            })
+                .then(data => {
+                    bodyView.textContent = data;
+                })
+                .catch(e => {
+                    alert('An error occured, please check developer console for details.');
+                    console.log(e);
+                });
+        }
+        const readURL = (e) => {
+            const input = e.target;
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = (e) => {
+                    imageView.setAttribute("src", e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        document.getElementById("userFileInput").addEventListener("change", readURL);
+        document.getElementById("uploadBtn").addEventListener("click", uploadImg);
+    </script>
+</body>
+
+</html>

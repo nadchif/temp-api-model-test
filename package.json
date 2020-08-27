@@ -1,0 +1,15 @@
+{
+  "name": "road-classification-test",
+  "version": "1.0.0",
+  "description": "Web page for easy interface to test the team-163-ai road classification API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./node_modules/.bin/live-server ./ -o"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}
